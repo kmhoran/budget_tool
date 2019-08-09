@@ -1,6 +1,6 @@
 # Create the build environment image
 FROM mcr.microsoft.com/dotnet/core/sdk:2.2 as build-env
-WORKDIR /app
+WORKDIR /AppCli
  
 # Copy the project file and restore the dependencies
 COPY *.csproj ./
