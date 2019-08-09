@@ -1,0 +1,9 @@
+# builds
+bin/
+obj/
+
+# vscode
+.vscode
+
+# Docker
+Dockerfile
