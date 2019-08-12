@@ -14,7 +14,6 @@ namespace AppCli
         {
             var collection = new ServiceCollection();
             collection.AddScoped<ISheetRepository, SheetRepository>();
-
             collection.Configure<GoogleConfig>(config.GetSection(nameof(GoogleConfig)))
             .AddOptions();
 

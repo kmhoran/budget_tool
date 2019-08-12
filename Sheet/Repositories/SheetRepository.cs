@@ -23,6 +23,8 @@ namespace Sheet.Common
         public SheetRepository(IOptions<GoogleConfig> secrets)
         {
             var _config = secrets.Value;
+            Console.WriteLine("CONFIG: ");
+            Console.WriteLine($"    {_config.EnvironmentName}");
             ServiceAccountCredential credential;
 
             var initializer = new ServiceAccountCredential.Initializer(_config.ServiceEmail)

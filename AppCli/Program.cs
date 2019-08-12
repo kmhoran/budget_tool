@@ -4,9 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sheet.Common.Interfaces;
 using Sheet.Common.Models;
-using Sheet.Common;
-using Sheet.Common.Interfaces;
-using Sheet.Common.Models;
+using Extentions.Config;
 
 namespace AppCli
 {
@@ -28,6 +26,8 @@ namespace AppCli
             {
                 builder.AddUserSecrets<GoogleConfig>();
             }
+
+            builder.AddDockerSecrets();
 
             Configuration = builder.Build();
 
