@@ -2,30 +2,37 @@
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Services;
-using Google.Apis.Util.Store;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Threading;
 using Sheet.Common.Interfaces;
 using Microsoft.Extensions.Options;
 using Sheet.Common.Models;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Sheet.Common
 {
     public class SheetRepository : ISheetRepository
     {
         private readonly string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
-        // private GoogleConfig _config;
         private SheetsService _googleSheets;
         public SheetRepository(IOptions<GoogleConfig> secrets)
         {
+            // TODO: remove this development code
             var _config = secrets.Value;
             Console.WriteLine("CONFIG: ");
             Console.WriteLine($"    {_config.EnvironmentName}");
             ServiceAccountCredential credential;
+
+            // TODO: replace messages with real errors
+            if (string.IsNullOrEmpty(_config.ServiceEmail))
+            {
+                Console.WriteLine($"GOOGLE EMAIL NOT PROVIDED: {_config.ServiceEmail}");
+                return;
+            }
+            if (string.IsNullOrEmpty(_config.PrivateKey))
+            {
+                Console.WriteLine($"GOOGLE PRIVATE KEY NOT PROVIDED: {_config.PrivateKey}");
+                return;
+            }
 
             var initializer = new ServiceAccountCredential.Initializer(_config.ServiceEmail)
             {
@@ -61,11 +68,20 @@ namespace Sheet.Common
 
 
         // google API quickstart
+        // TODO: remove demo method
         public void QuickStart()
         {
             // define request parameters
             string spreadsheetId = "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms";
             string range = "Class Data!A2:E";
+
+            // TODO: replace with real error
+            if (_googleSheets == null)
+            {
+                Console.WriteLine("Could not establish connection to GoogleAPI.");
+                return;
+            }
+
             SpreadsheetsResource.ValuesResource.GetRequest request = _googleSheets.Spreadsheets.Values.Get(spreadsheetId, range);
 
             // print names and majors of students in a sample spreadsheet
