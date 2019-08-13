@@ -2,6 +2,11 @@
 bin/
 obj/
 
+# development secrets
+devSecrets/
+
 # vscode
 .vscode
 
+# Docker
+docker-compose.yml
