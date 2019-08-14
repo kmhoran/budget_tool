@@ -34,8 +34,17 @@ namespace AppCli
             var services = AppServices.GetProvider(Configuration);
 
             services.GetService<GoogleConfig>();
-            var sheetRepo = services.GetService<ISheetRepository>();
-            sheetRepo.QuickStart();
+            try
+            {
+                var sheetRepo = services.GetService<ISheetRepository>();
+                sheetRepo.QuickStart();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Execution failed.");
+                Console.WriteLine(e);
+            }
+
         }
     }
 }

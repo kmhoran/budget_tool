@@ -16,22 +16,21 @@ namespace Sheet.Common
         private SheetsService _googleSheets;
         public SheetRepository(IOptions<GoogleConfig> secrets)
         {
-            // TODO: remove this development code
             var _config = secrets.Value;
-            Console.WriteLine("CONFIG: ");
-            Console.WriteLine($"    {_config.EnvironmentName}");
             ServiceAccountCredential credential;
 
-            // TODO: replace messages with real errors
             if (string.IsNullOrEmpty(_config.ServiceEmail))
             {
                 Console.WriteLine($"GOOGLE EMAIL NOT PROVIDED: {_config.ServiceEmail}");
-                return;
+                throw new ArgumentNullException(nameof(_config.ServiceEmail));
             }
+
+
             if (string.IsNullOrEmpty(_config.PrivateKey))
             {
                 Console.WriteLine($"GOOGLE PRIVATE KEY NOT PROVIDED: {_config.PrivateKey}");
-                return;
+                throw new ArgumentNullException(nameof(_config.PrivateKey));
+
             }
 
             var initializer = new ServiceAccountCredential.Initializer(_config.ServiceEmail)
