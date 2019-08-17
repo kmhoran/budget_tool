@@ -11,14 +11,9 @@ namespace Config.Docker
         // TODO: replace for appsettings value
         private readonly string DOCKER_SECRET_PATH = "/run/secrets/";
 
-        public DockerSecretParser(IFileSystem fileSystem)
+        public DockerSecretParser(IFileSystem fileSystem = null)
         {
-            _fileSystem = fileSystem;
-        }
-        public DockerSecretParser() : this(
-        fileSystem: new FileSystem() //use default implementation which calls System.IO
-    )
-        {
+            _fileSystem = fileSystem ?? new FileSystem();
         }
 
         private IDictionary<string, string> _data = new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
