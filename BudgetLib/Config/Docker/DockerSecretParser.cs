@@ -1,54 +1,44 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using Microsoft.Extensions.FileProviders;
+using System.IO.Abstractions;
 
 namespace Config.Docker
 {
     public class DockerSecretParser
     {
-        const string DOCKER_SECRET_PATH = "/run/secrets/";
+        private readonly IFileSystem _fileSystem;
 
-        private readonly bool SecretsExists;
-        private readonly IFileProvider _provider;
-        private readonly IDictionary<string, string> _data = new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        // TODO: replace for appsettings value
+        private readonly string DOCKER_SECRET_PATH = "/run/secrets/";
 
-        public DockerSecretParser()
+        public DockerSecretParser(IFileSystem fileSystem)
         {
-            // if there are no secrets set, let's forget the whole thing
-            SecretsExists = Directory.Exists(DOCKER_SECRET_PATH);
-
-            if (SecretsExists)
-            {
-                _provider = new PhysicalFileProvider(DOCKER_SECRET_PATH);
-            }
-
+            _fileSystem = fileSystem;
         }
+        public DockerSecretParser() : this(
+        fileSystem: new FileSystem() //use default implementation which calls System.IO
+    )
+        {
+        }
+
+        private IDictionary<string, string> _data = new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
         public IDictionary<string, string> Parse()
         {
             _data.Clear();
-            if (!SecretsExists) return _data;
+            var secretsExists = _fileSystem.Directory.Exists(DOCKER_SECRET_PATH);
+            if (!secretsExists) return _data;
 
-            var contents = _provider.GetDirectoryContents("");
-            var directoryInfo = contents.GetEnumerator();
-
-            while (directoryInfo.MoveNext())
+            foreach (var filePath in _fileSystem.Directory.GetFiles(DOCKER_SECRET_PATH))
             {
-                var info = directoryInfo.Current;
-                if (info.Exists)
-                {
-                    var underscoreKey = info.Name;
-                    using (var stream = info.CreateReadStream())
-                    using (var streamReader = new StreamReader(stream))
-                    {
-                        // convert Docker underscore_key to dotnet colon:key
-                        var value = streamReader.ReadToEnd();
-                        var colonKey = underscoreKey.Replace('_', ':');
-                        _data.Add(colonKey, value);
-                    }
-                }
-            }
+                // Docker-secret nesting will be denoted by `_`. 
+                // Convert that to dotnet config `:` nesting.
+                var underscoreKey = _fileSystem.FileInfo.FromFileName(filePath).Name;
+                var colonKey = underscoreKey.Replace('_', ':');
 
+                var value = _fileSystem.File.ReadAllText(filePath);
+                _data.Add(colonKey, value);
+            }
 
             return _data;
         }
