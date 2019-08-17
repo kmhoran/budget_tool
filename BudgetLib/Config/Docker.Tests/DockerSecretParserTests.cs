@@ -11,20 +11,20 @@ namespace Config.Docker.Tests
         private readonly string DOCKER_SECRET_PATH = "/run/secrets/";
 
         [Fact]
-        public void Constructor_with_NoDependencies_returns_Controller()
+        public void Constructor_with_NoDependencies_returns_Instance()
         {
-            var result = new DockerSecretParser();
+            var instance = new DockerSecretParser();
 
-            Assert.NotNull(result);
+            Assert.NotNull(instance);
         }
 
         [Fact]
-        public void Constructor_with_Dependencies_returns_Controller()
+        public void Constructor_with_Dependencies_returns_Instance()
         {
 
-            var result = new DockerSecretParser(new FileSystem());
+            var instance = new DockerSecretParser(new FileSystem());
 
-            Assert.NotNull(result);
+            Assert.NotNull(instance);
         }
 
         [Fact]
@@ -41,7 +41,7 @@ namespace Config.Docker.Tests
         }
 
         [Fact]
-        public void Parse_where_DockerSecretsExist_returns_DotNetConfigValues()
+        public void Parse_where_DockerSecretsExist_returns_DotnetConfigValues()
         {
             var shallowKey = "ShallowKey";
             var shallowValue = "---shallow-value---";
