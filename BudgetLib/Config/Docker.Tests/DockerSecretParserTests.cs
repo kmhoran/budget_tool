@@ -41,7 +41,7 @@ namespace Config.Docker.Tests
         }
 
         [Fact]
-        public void Parse_where_DockerSecretExists_returns_DotNetConfigValues()
+        public void Parse_where_DockerSecretsExist_returns_DotNetConfigValues()
         {
             var shallowKey = "ShallowKey";
             var shallowValue = "---shallow-value---";
