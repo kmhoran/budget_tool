@@ -6,7 +6,4 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.2.0" />
     </ItemGroup>
-    <ItemGroup>
-      <ProjectReference Include="..\..\Extentions\Text\Extentions.Text.csproj" />
-    </ItemGroup>
 </Project>

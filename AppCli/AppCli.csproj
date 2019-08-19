@@ -1,10 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <ItemGroup>
-        <ProjectReference Include="..\Sheet\Services\Sheet.Services.csproj" />
-        <ProjectReference Include="..\Sheet\Common\Sheet.Common.csproj" />
-        <ProjectReference Include="..\Extentions\Text\Extentions.Text.csproj" />
-        <ProjectReference Include="..\Extentions\Config\Extentions.Config.csproj" />
-        <ProjectReference Include="..\Config\Docker\Config.Docker.csproj" />
+        <ProjectReference Include="..\BudgetLib\Sheet\Services\Sheet.Services.csproj" />
+        <ProjectReference Include="..\BudgetLib\Sheet\Common\Sheet.Common.csproj" />
+        <ProjectReference Include="..\BudgetLib\Extentions\Config\Extentions.Config.csproj" />
+        <ProjectReference Include="..\BudgetLib\Config\Docker\Config.Docker.csproj" />
     </ItemGroup>
     <PropertyGroup>
         <OutputType>Exe</OutputType>
