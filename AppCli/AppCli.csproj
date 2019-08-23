@@ -4,6 +4,8 @@
         <ProjectReference Include="..\BudgetLib\Sheet\Common\Sheet.Common.csproj" />
         <ProjectReference Include="..\BudgetLib\Extentions\Config\Extentions.Config.csproj" />
         <ProjectReference Include="..\BudgetLib\Config\Docker\Config.Docker.csproj" />
+        <ProjectReference Include="..\BudgetLib\MonthSheet\Services\MonthSheet.Services.csproj" />
+        <ProjectReference Include="..\BudgetLib\MonthSheet\Common\MonthSheet.Common.csproj" />
     </ItemGroup>
     <PropertyGroup>
         <OutputType>Exe</OutputType>

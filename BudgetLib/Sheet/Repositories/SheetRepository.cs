@@ -14,31 +14,31 @@ namespace Sheet.Common
     {
         private readonly string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
         private SheetsService _googleSheets;
-        public SheetRepository(IOptions<GoogleConfig> secrets)
+        public SheetRepository(IOptions<GoogleServiceAccount> serviceAccount)
         {
-            var _config = secrets.Value;
+            var _serviceAccount = serviceAccount.Value;
             ServiceAccountCredential credential;
 
-            if (string.IsNullOrEmpty(_config.ServiceEmail))
+            if (string.IsNullOrEmpty(_serviceAccount.ServiceEmail))
             {
-                Console.WriteLine($"GOOGLE EMAIL NOT PROVIDED: {_config.ServiceEmail}");
-                throw new ArgumentNullException(nameof(_config.ServiceEmail));
+                Console.WriteLine($"GOOGLE EMAIL NOT PROVIDED: {_serviceAccount.ServiceEmail}");
+                throw new ArgumentNullException(nameof(_serviceAccount.ServiceEmail));
             }
 
 
-            if (string.IsNullOrEmpty(_config.PrivateKey))
+            if (string.IsNullOrEmpty(_serviceAccount.PrivateKey))
             {
-                Console.WriteLine($"GOOGLE PRIVATE KEY NOT PROVIDED: {_config.PrivateKey}");
-                throw new ArgumentNullException(nameof(_config.PrivateKey));
+                Console.WriteLine($"GOOGLE PRIVATE KEY NOT PROVIDED: {_serviceAccount.PrivateKey}");
+                throw new ArgumentNullException(nameof(_serviceAccount.PrivateKey));
 
             }
 
-            var initializer = new ServiceAccountCredential.Initializer(_config.ServiceEmail)
+            var initializer = new ServiceAccountCredential.Initializer(_serviceAccount.ServiceEmail)
             {
                 Scopes = Scopes
             };
 
-            credential = new ServiceAccountCredential(initializer.FromPrivateKey(_config.PrivateKey));
+            credential = new ServiceAccountCredential(initializer.FromPrivateKey(_serviceAccount.PrivateKey));
 
             if (!credential.RequestAccessTokenAsync(System.Threading.CancellationToken.None).Result)
                 throw new InvalidOperationException("Access token failed.");
@@ -53,18 +53,6 @@ namespace Sheet.Common
 
         }
 
-        private static string ShowByteValues(byte[] bytes, int last)
-        {
-            string returnString = "   ";
-            for (int ctr = 0; ctr <= last - 1; ctr++)
-            {
-                if (ctr % 20 == 0)
-                    returnString += "\n   ";
-                returnString += String.Format("{0:X2} ", bytes[ctr]);
-            }
-            return returnString;
-        }
-
 
         // google API quickstart
         // TODO: remove demo method
@@ -74,18 +62,7 @@ namespace Sheet.Common
             string spreadsheetId = "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms";
             string range = "Class Data!A2:E";
 
-            // TODO: replace with real error
-            if (_googleSheets == null)
-            {
-                Console.WriteLine("Could not establish connection to GoogleAPI.");
-                return;
-            }
-
-            SpreadsheetsResource.ValuesResource.GetRequest request = _googleSheets.Spreadsheets.Values.Get(spreadsheetId, range);
-
-            // print names and majors of students in a sample spreadsheet
-            ValueRange response = request.Execute();
-            IList<IList<Object>> values = response.Values;
+            IList<IList<Object>> values = LoadRange(spreadsheetId, range);
             if (values != null && values.Count > 0)
             {
                 Console.WriteLine("Name,     Major");
@@ -100,6 +77,16 @@ namespace Sheet.Common
                 Console.WriteLine("No data found");
             }
             Console.Read();
+        }
+
+
+        public IList<IList<Object>> LoadRange(string spreadsheetId, string range)
+        {
+            if (_googleSheets == null)
+                throw new ApplicationException("Could not establish connection to GoogleAPI.");
+
+            var request = _googleSheets.Spreadsheets.Values.Get(spreadsheetId, range);
+            return request.Execute().Values;
         }
 
 

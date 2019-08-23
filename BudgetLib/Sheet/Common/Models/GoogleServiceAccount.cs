@@ -1,13 +1,11 @@
 using System;
-using System.Text;
 
 namespace Sheet.Common.Models
 {
-    public class GoogleConfig
+    public class GoogleServiceAccount
     {
         public string ServiceEmail { get; set; }
         public string PrivateKey { get; set; }
-        public string EnvironmentName { get; set; }
         
     }
 }

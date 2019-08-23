@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Sheet.Common.Interfaces;
 using Sheet.Common.Models;
 using Extentions.Config;
+using MonthSheet.Common.Interfaces;
+using MonthSheet.Common.Models;
 
 namespace AppCli
 {
@@ -24,7 +26,8 @@ namespace AppCli
 
             if (isDevelopment)
             {
-                builder.AddUserSecrets<GoogleConfig>();
+                builder.AddUserSecrets<GoogleServiceAccount>();
+                builder.AddUserSecrets<MonthSheetDetails>();
             }
 
             builder.AddDockerSecrets();
@@ -33,11 +36,19 @@ namespace AppCli
 
             var services = AppServices.GetProvider(Configuration);
 
-            services.GetService<GoogleConfig>();
+            services.GetService<GoogleServiceAccount>();
+            services.GetService<MonthSheetDetails>();
+
             try
             {
-                var sheetRepo = services.GetService<ISheetRepository>();
-                sheetRepo.QuickStart();
+                var monthRepo = services.GetService<IMonthSheetRepository>();
+                var transactions = monthRepo.LoadTransactions();
+
+                // TODO: Remove Demo
+                foreach (var expense in transactions.Expenses)
+                {
+                    Console.WriteLine($"${expense.NetCost}\t\t{expense.Detail}");
+                }
             }
             catch (Exception e)
             {
