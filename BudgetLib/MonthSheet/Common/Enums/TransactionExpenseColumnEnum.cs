@@ -2,7 +2,7 @@ using System;
 
 namespace MonthSheet.Common.Enums
 {
-    public enum ExpenseTransactionColumnTypes
+    public enum TransactionExpenseColumnEnum
     {
         SaveNote,
         DateString,

@@ -6,6 +6,9 @@
         <ProjectReference Include="..\BudgetLib\Config\Docker\Config.Docker.csproj" />
         <ProjectReference Include="..\BudgetLib\MonthSheet\Services\MonthSheet.Services.csproj" />
         <ProjectReference Include="..\BudgetLib\MonthSheet\Common\MonthSheet.Common.csproj" />
+        <ProjectReference Include="..\BudgetLib\HistoricSheet\Services\HistoricSheet.Services.csproj" />
+        <ProjectReference Include="..\BudgetLib\HistoricSheet\Common\HistoricSheet.Common.csproj" />
+        <ProjectReference Include="..\BudgetLib\SheetApi\Common\SheetApi.Common.csproj" />
     </ItemGroup>
     <PropertyGroup>
         <OutputType>Exe</OutputType>

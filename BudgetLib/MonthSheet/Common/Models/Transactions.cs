@@ -5,7 +5,9 @@ namespace MonthSheet.Common.Models
 {
     public class Transactions
     {
-        public List<ExpenseTransaction> Expenses { get; set; }
-        public List<IncomeTransaction> Income { get; set; }
+        public List<TransactionExpense> Expenses { get; set; }
+        public IList<IList<Object>> RawExpenses { get; set; }
+        public List<TransactionIncome> Income { get; set; }
+        public IList<IList<Object>> RawIncome { get; set; }
     }
 }

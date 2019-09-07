@@ -1,4 +1,5 @@
 using System;
+using HistoricSheet.Common.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MonthSheet.Common.Interfaces;
@@ -23,7 +24,8 @@ namespace AppCli
 
             // Configure secrets
             collection.Configure<GoogleServiceAccount>(config.GetSection(nameof(GoogleServiceAccount)))
-            .Configure<MonthSheetDetails>(config.GetSection(nameof(MonthSheetDetails)));
+            .Configure<MonthSheetDetails>(config.GetSection(nameof(MonthSheetDetails)))
+            .Configure<HistoricSheetDetails>(config.GetSection(nameof(HistoricSheetDetails)));
 
             collection.AddOptions();
 

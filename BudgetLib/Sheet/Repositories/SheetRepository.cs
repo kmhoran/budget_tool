@@ -7,12 +7,13 @@ using System.Collections.Generic;
 using Sheet.Common.Interfaces;
 using Microsoft.Extensions.Options;
 using Sheet.Common.Models;
+using Sheet.Common.Enums;
 
 namespace Sheet.Common
 {
     public class SheetRepository : ISheetRepository
     {
-        private readonly string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
+        private readonly string[] Scopes = { SheetsService.Scope.Spreadsheets };
         private SheetsService _googleSheets;
         public SheetRepository(IOptions<GoogleServiceAccount> serviceAccount)
         {
@@ -30,7 +31,6 @@ namespace Sheet.Common
             {
                 Console.WriteLine($"GOOGLE PRIVATE KEY NOT PROVIDED: {_serviceAccount.PrivateKey}");
                 throw new ArgumentNullException(nameof(_serviceAccount.PrivateKey));
-
             }
 
             var initializer = new ServiceAccountCredential.Initializer(_serviceAccount.ServiceEmail)
@@ -53,33 +53,7 @@ namespace Sheet.Common
 
         }
 
-
-        // google API quickstart
-        // TODO: remove demo method
-        public void QuickStart()
-        {
-            // define request parameters
-            string spreadsheetId = "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms";
-            string range = "Class Data!A2:E";
-
-            IList<IList<Object>> values = LoadRange(spreadsheetId, range);
-            if (values != null && values.Count > 0)
-            {
-                Console.WriteLine("Name,     Major");
-                foreach (var row in values)
-                {
-                    // print columns A to E (indecies 0 - 4)
-                    Console.WriteLine($"{row[0]},     {row[4]}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("No data found");
-            }
-            Console.Read();
-        }
-
-
+        // TODO: add batchGet implementation for more optimized queries
         public IList<IList<Object>> LoadRange(string spreadsheetId, string range)
         {
             if (_googleSheets == null)
@@ -89,95 +63,73 @@ namespace Sheet.Common
             return request.Execute().Values;
         }
 
-
-
-    }
-
-
-    public static class Extentions
-    {
-        public static byte[] Replace(this byte[] source, byte[] search, byte[] replacement)
+        public bool UpdateRange(string spreadsheetId, RangeUpdateModel model)
         {
-            // ReplaceBytes(src, search, repl);
-            List<byte> result = new List<byte>();
-            var srcLen = source.Length;
-            var schLen = search.Length;
+            var valueRange = new ValueRange();
+            valueRange.MajorDimension = model.Dimension.GetString();
+            valueRange.Values = model.Values;
 
-            for (int i = 0; i < srcLen; i++)
-            {
-                // potential match
-                if (source[i] == search[0] && i + schLen <= srcLen)
-                {
-                    var isMatch = true;
-                    for (var schIndex = 0; schIndex < schLen; schIndex++)
-                    {
-                        if (source[schIndex + i] != search[schIndex]) isMatch = false;
-                    }
-                    // not a match, 
-                    if (!isMatch)
-                    {
-                        result.Add(source[i]);
-                        continue;
-                    }
-                    result.AddRange(replacement);
-                    i += schLen - 1;
-                    continue;
-                }
-                result.Add(source[i]);
-            }
+            var updateRequest = _googleSheets.Spreadsheets.Values.Update(
+                valueRange,
+                spreadsheetId,
+                model.Range
+            );
+            updateRequest.ValueInputOption = SpreadsheetsResource
+                .ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
 
-            return result.ToArray();
-        }
-        public static int FindBytes(byte[] src, byte[] find)
-        {
-            int index = -1;
-            int matchIndex = 0;
-            // handle the complete source array
-            for (int i = 0; i < src.Length; i++)
-            {
-                if (src[i] == find[matchIndex])
-                {
-                    if (matchIndex == (find.Length - 1))
-                    {
-                        index = i - matchIndex;
-                        break;
-                    }
-                    matchIndex++;
-                }
-                else if (src[i] == find[0])
-                {
-                    matchIndex = 1;
-                }
-                else
-                {
-                    matchIndex = 0;
-                }
-
-            }
-            return index;
+            var response = updateRequest.Execute();
+            Console.WriteLine($"Cells Updated: {response.UpdatedCells}");
+            return (response.UpdatedCells ?? 0) > 0;
         }
 
-        public static byte[] ReplaceBytes(byte[] src, byte[] search, byte[] repl)
+        public bool UpdateRange(string spreadsheetId, IList<RangeUpdateModel> models)
         {
-            byte[] dst = null;
-            int index = FindBytes(src, search);
-            if (index >= 0)
+            var data = new List<ValueRange>();
+            foreach (var model in models)
             {
-                dst = new byte[src.Length - search.Length + repl.Length];
-                // before found array
-                Buffer.BlockCopy(src, 0, dst, 0, index);
-                // repl copy
-                Buffer.BlockCopy(repl, 0, dst, index, repl.Length);
-                // rest of src array
-                Buffer.BlockCopy(
-                    src,
-                    index + search.Length,
-                    dst,
-                    index + repl.Length,
-                    src.Length - (index + search.Length));
+                var valueRange = new ValueRange();
+                valueRange.Values = model.Values;
+                valueRange.MajorDimension = model.Dimension.GetString();
+                valueRange.Range = model.Range;
+                data.Add(valueRange);
             }
-            return dst;
+
+            var requestBody = new BatchUpdateValuesRequest();
+            requestBody.ValueInputOption = "USER_ENTERED"; // Google's magic string
+            requestBody.Data = data;
+
+            var request = _googleSheets.Spreadsheets.Values.BatchUpdate(requestBody, spreadsheetId);
+            var response = request.Execute();
+            return (response.TotalUpdatedCells ?? 0) > 0;
         }
+
+        public bool ClearRange(string spreadsheetId, string range)
+        {
+            var requestBody = new Google.Apis.Sheets.v4.Data.ClearValuesRequest();
+            var clearRequest = _googleSheets.Spreadsheets.Values.Clear(requestBody, spreadsheetId, range);
+            var response = clearRequest.Execute();
+            return true;
+        }
+
+        // TODO: figire out how this could be useful
+        // public bool AppendToRange(string spreadsheetId, RangeUpdateModel model)
+        // {
+        //     var valueInputOption = SpreadsheetsResource.ValuesResource
+        //         .AppendRequest.ValueInputOptionEnum.USERENTERED;
+        //     var insertDataOption = SpreadsheetsResource.ValuesResource
+        //         .AppendRequest.InsertDataOptionEnum.INSERTROWS;
+
+        //     var valueRange = new ValueRange();
+        //     valueRange.Values = model.Values;
+        //     valueRange.MajorDimension = model.Dimension.GetString();
+        //     valueRange.Range = model.Range;
+
+        //     var request = _googleSheets.Spreadsheets.Values.Append(valueRange, spreadsheetId, model.Range);
+        //     request.ValueInputOption = valueInputOption;
+        //     request.InsertDataOption = insertDataOption;
+        //     var response = request.Execute();
+        //     return (response.Updates.UpdatedCells ?? 0) > 0;
+        // }
     }
 }
 

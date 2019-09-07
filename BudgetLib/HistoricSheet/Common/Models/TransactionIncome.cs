@@ -1,10 +1,9 @@
 using System;
 
-namespace MonthSheet.Common.Models
+namespace HistoricSheet.Common.Models
 {
-    public class IncomeTransaction
+    public class TransactionIncome
     {
-        public bool Save { get; set; }
         public DateTime TransactionDate { get; set; }
         public decimal NetGain { get; set; }
         public string Detail { get; set; }
