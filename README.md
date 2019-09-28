@@ -1,23 +1,31 @@
-# Budget_Tool
+# Budget Tool
 
-A tool to manage my budget records kept on Google Sheets.
+A **.NET** tool to manage my budget records kept on Google Sheets.
+
+## Requirements
+* .NET Core SDK 2.2
 
 ## Installation
 
 Clone the project into your working directory:
 
-```bash
+``` bash
 $ git clone https://github.com/kmhoran/budget_tool.git .
 ```
 
 ## Usage
 
-Build and run
+From the working directory, build and run:
 
-```bash
+``` bash
 $ dotnet build
 $ cd AppCli
 $ dotnet run
+```
+## Tests
+From the working directory, run:
+``` bash
+$ dotnet test
 ```
 
 ## Contributing

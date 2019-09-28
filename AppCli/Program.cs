@@ -2,9 +2,11 @@
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Sheet.Common.Interfaces;
-using Sheet.Common.Models;
+using SheetApi.Common.Models;
 using Extentions.Config;
+using MonthSheet.Common.Interfaces;
+using MonthSheet.Common.Models;
+using HistoricSheet.Common.Models;
 
 namespace AppCli
 {
@@ -24,7 +26,9 @@ namespace AppCli
 
             if (isDevelopment)
             {
-                builder.AddUserSecrets<GoogleConfig>();
+                builder.AddUserSecrets<GoogleServiceAccount>();
+                builder.AddUserSecrets<MonthSheetDetails>();
+                builder.AddUserSecrets<HistoricSheetDetails>();
             }
 
             builder.AddDockerSecrets();
@@ -33,11 +37,22 @@ namespace AppCli
 
             var services = AppServices.GetProvider(Configuration);
 
-            services.GetService<GoogleConfig>();
+            services.GetService<GoogleServiceAccount>();
+            services.GetService<MonthSheetDetails>();
+
             try
             {
-                var sheetRepo = services.GetService<ISheetRepository>();
-                sheetRepo.QuickStart();
+                var monthRepo = services.GetService<IMonthSheetRepository>();
+                var monthService = services.GetService<IMonthSheetService>();
+
+
+                var close = monthService.CloseMonth();
+                if(!close.Success)
+                {
+                    // replace with some real error
+                    Console.WriteLine(close.Exception);
+                }
+
             }
             catch (Exception e)
             {
