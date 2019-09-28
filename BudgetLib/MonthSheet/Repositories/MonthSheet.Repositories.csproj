@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\MonthSheet.Common.csproj" />
+    <ProjectReference Include="..\..\SheetApi\Common\SheetApi.Common.csproj" />
+    <ProjectReference Include="..\..\SheetApi\Services\SheetApi.Services.csproj" />
+    <ProjectReference Include="..\..\Common\Core\Common.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+</Project>

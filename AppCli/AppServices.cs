@@ -1,9 +1,14 @@
 using System;
+using HistoricSheet.Common.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Sheet.Common;
-using Sheet.Common.Interfaces;
-using Sheet.Common.Models;
+using MonthSheet.Common.Interfaces;
+using MonthSheet.Common.Models;
+using MonthSheet.Repositories;
+using MonthSheet.Services;
+using SheetApi.Common.Interfaces;
+using SheetApi.Common.Models;
+using SheetApi.Services;
 
 namespace AppCli
 {
@@ -13,9 +18,17 @@ namespace AppCli
         public static ServiceProvider GetProvider(IConfigurationRoot config)
         {
             var collection = new ServiceCollection();
-            collection.AddScoped<ISheetRepository, SheetRepository>();
-            collection.Configure<GoogleConfig>(config.GetSection(nameof(GoogleConfig)))
-            .AddOptions();
+            collection
+            .AddSingleton<ISheetApiService, SheetApiService>()
+            .AddScoped<IMonthSheetRepository, MonthSheetRepository>()
+            .AddScoped<IMonthSheetService, MonthSheetService>();
+
+            // Configure secrets
+            collection.Configure<GoogleServiceAccount>(config.GetSection(nameof(GoogleServiceAccount)))
+            .Configure<MonthSheetDetails>(config.GetSection(nameof(MonthSheetDetails)))
+            .Configure<HistoricSheetDetails>(config.GetSection(nameof(HistoricSheetDetails)));
+
+            collection.AddOptions();
 
             return collection.BuildServiceProvider();
         }

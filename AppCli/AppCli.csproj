@@ -1,9 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <ItemGroup>
-        <ProjectReference Include="..\BudgetLib\Sheet\Services\Sheet.Services.csproj" />
-        <ProjectReference Include="..\BudgetLib\Sheet\Common\Sheet.Common.csproj" />
         <ProjectReference Include="..\BudgetLib\Extentions\Config\Extentions.Config.csproj" />
         <ProjectReference Include="..\BudgetLib\Config\Docker\Config.Docker.csproj" />
+        <ProjectReference Include="..\BudgetLib\MonthSheet\Services\MonthSheet.Services.csproj" />
+        <ProjectReference Include="..\BudgetLib\MonthSheet\Common\MonthSheet.Common.csproj" />
+        <ProjectReference Include="..\BudgetLib\HistoricSheet\Services\HistoricSheet.Services.csproj" />
+        <ProjectReference Include="..\BudgetLib\HistoricSheet\Common\HistoricSheet.Common.csproj" />
+        <ProjectReference Include="..\BudgetLib\SheetApi\Common\SheetApi.Common.csproj" />
+        <ProjectReference Include="..\BudgetLib\SheetApi\Services\SheetApi.Services.csproj" />
+        <ProjectReference Include="..\BudgetLib\Common\Core\Common.Core.csproj" />
     </ItemGroup>
     <PropertyGroup>
         <OutputType>Exe</OutputType>
