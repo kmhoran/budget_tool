@@ -5,7 +5,7 @@ using MonthSheet.Common.Models;
 
 namespace HistoricSheet.Services
 {
-    public class HistoricSheetService: IHistoricSheetService
+    public class HistoricSheetService : IHistoricSheetService
     {
         private IHistoricSheetRepository _repo;
 
@@ -16,7 +16,11 @@ namespace HistoricSheet.Services
 
         public WrappedResponse AppendRecordsToHistoricLedger(Transactions transactions)
         {
-            return new WrappedResponse { Success = false };
+            var expenseResult = _repo.AppendExpenses(transactions.Expenses);
+            if (!expenseResult.Success) return expenseResult;
+            var incomeResult = _repo.AppendIncome(transactions.Income);
+            if (!incomeResult.Success) return incomeResult;
+            return new WrappedResponse { Success = true };
         }
     }
 }

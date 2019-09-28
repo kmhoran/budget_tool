@@ -7,6 +7,7 @@ using Extentions.Config;
 using MonthSheet.Common.Interfaces;
 using MonthSheet.Common.Models;
 using HistoricSheet.Common.Models;
+using HistoricSheet.Common.Interfaces;
 
 namespace AppCli
 {
@@ -44,13 +45,22 @@ namespace AppCli
             {
                 var monthRepo = services.GetService<IMonthSheetRepository>();
                 var monthService = services.GetService<IMonthSheetService>();
+                var historicService = services.GetService<IHistoricSheetService>();
 
 
                 var close = monthService.CloseMonth();
-                if(!close.Success)
+                if (!close.Success)
                 {
                     // replace with some real error
-                    Console.WriteLine(close.Exception);
+                    Console.WriteLine(close.Exception.Message);
+                    return;
+                }
+
+                var updateHistoric = historicService.AppendRecordsToHistoricLedger(close.Data.Transactions);
+                if (!updateHistoric.Success)
+                {
+                    Console.WriteLine(updateHistoric.Exception.Message);
+                    return;
                 }
 
             }

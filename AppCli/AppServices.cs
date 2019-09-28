@@ -1,5 +1,8 @@
 using System;
+using HistoricSheet.Common.Interfaces;
 using HistoricSheet.Common.Models;
+using HistoricSheet.Repositories;
+using HistoricSheet.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MonthSheet.Common.Interfaces;
@@ -21,7 +24,9 @@ namespace AppCli
             collection
             .AddSingleton<ISheetApiService, SheetApiService>()
             .AddScoped<IMonthSheetRepository, MonthSheetRepository>()
-            .AddScoped<IMonthSheetService, MonthSheetService>();
+            .AddScoped<IMonthSheetService, MonthSheetService>()
+            .AddScoped<IHistoricSheetRepository, HistoricSheetRepository>()
+            .AddScoped<IHistoricSheetService, HistoricSheetService>();
 
             // Configure secrets
             collection.Configure<GoogleServiceAccount>(config.GetSection(nameof(GoogleServiceAccount)))

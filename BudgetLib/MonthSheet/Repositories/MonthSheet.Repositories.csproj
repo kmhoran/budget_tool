@@ -5,6 +5,7 @@
     <ProjectReference Include="..\..\SheetApi\Common\SheetApi.Common.csproj" />
     <ProjectReference Include="..\..\SheetApi\Services\SheetApi.Services.csproj" />
     <ProjectReference Include="..\..\Common\Core\Common.Core.csproj" />
+    <ProjectReference Include="..\..\Common\Utils\Common.Utils.csproj" />
   </ItemGroup>
 
   <ItemGroup>
