@@ -1,0 +1,7 @@
+language: csharp
+mono: none
+dotnet: 2.2.401
+solution: Budget.sln
+script:
+  - dotnet restore
+  - dotnet test
