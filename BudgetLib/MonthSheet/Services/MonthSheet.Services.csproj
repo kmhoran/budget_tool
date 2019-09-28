@@ -5,6 +5,8 @@
     <ProjectReference Include="..\Repositories\MonthSheet.Repositories.csproj" />
     <ProjectReference Include="..\..\Common\Utils\Common.Utils.csproj" />
     <ProjectReference Include="..\..\Extentions\Common\Extentions.Common.csproj" />
+    <ProjectReference Include="..\..\SheetApi\Common\SheetApi.Common.csproj" />
+    <ProjectReference Include="..\..\Common\Core\Common.Core.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

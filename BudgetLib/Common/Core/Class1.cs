@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SheetApi.Service
+namespace Common.Core
 {
     public class Class1
     {

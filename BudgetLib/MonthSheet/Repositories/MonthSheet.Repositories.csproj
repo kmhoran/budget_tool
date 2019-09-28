@@ -2,10 +2,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common\MonthSheet.Common.csproj" />
-    <ProjectReference Include="..\..\Sheet\Repositories\Sheet.Repositories.csproj" />
-    <ProjectReference Include="..\..\Sheet\Common\Sheet.Common.csproj" />
     <ProjectReference Include="..\..\SheetApi\Common\SheetApi.Common.csproj" />
-    <ProjectReference Include="..\..\SheetApi\Service\SheetApi.Service.csproj" />
+    <ProjectReference Include="..\..\SheetApi\Services\SheetApi.Services.csproj" />
+    <ProjectReference Include="..\..\Common\Core\Common.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

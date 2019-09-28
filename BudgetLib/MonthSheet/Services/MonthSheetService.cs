@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Common.Core.Models;
 using Common.Utils;
 using Extentions.Common;
 using Microsoft.Extensions.Options;
 using MonthSheet.Common.Enums;
 using MonthSheet.Common.Interfaces;
 using MonthSheet.Common.Models;
+using SheetApi.Common.Models;
 
 namespace MonthSheet.Services
 {
@@ -30,19 +32,60 @@ namespace MonthSheet.Services
             return _repo.LoadCategories();
         }
 
-        public bool CommitThisMonthsImbalance()
+
+        #region Close Month
+        public WrappedResponse<MonthCloseResponse> CloseMonth()
+        {
+            // load transactions and categories into memory
+            var transactions = LoadTransactions();
+            var categories = LoadCategories();
+
+            var updates = new List<RangeUpdateModel>();
+
+            // update imbalance log
+            updates.AddRange(PrepSaveThisMonthsImbalance());
+
+            // update month starting balance
+            updates.AddRange(PrepUpdateMonthStartBalance());
+
+            // save highlighted
+            updates.AddRange(PrepSaveHighlightedTransactions(transactions, categories));
+
+            // the service expects to write highlighted transactions to a blank ledger. Let's clear it out.
+            var tableClearResult = _repo.ClearTransactions();
+            if (!tableClearResult.Success)
+            {
+                // TODO : get some real error handling
+                Console.WriteLine("COULD NOT CLEAR TRANSACTION TABLE");
+                return (WrappedResponse<MonthCloseResponse>)tableClearResult;
+            }
+
+            
+
+            return new WrappedResponse<MonthCloseResponse>
+            {
+                Success = true,
+                Data = new MonthCloseResponse
+                {
+                    Transactions = transactions,
+                    Categories = categories
+                }
+            };
+        }
+
+        private IList<RangeUpdateModel> PrepSaveThisMonthsImbalance()
         {
             var imbalanceValue = _repo.LoadCurrentImbalanceValue();
             var imbalanceIndex = GetImbalanceIndex();
-            if (!_repo.UpdateImbalance(
+            var updateImbalancePrep = _repo.PrepUpdateImbalance(
                 value: imbalanceValue,
-                index: imbalanceIndex))
-                return false;
+                index: imbalanceIndex);
 
             // for backwards compatability
-            if (!_repo.UpdateImbalanceIndex(imbalanceIndex))
-                return false;
-            return true;
+            var updateIndexPrep = _repo.PrepUpdateImbalanceIndex(imbalanceIndex);
+            updateImbalancePrep.AddRange(updateIndexPrep);
+
+            return updateImbalancePrep;
         }
 
         private int GetImbalanceIndex()
@@ -54,31 +97,30 @@ namespace MonthSheet.Services
             return ((now.Year - start.Year) * 12) + (now.Month - start.Month);
         }
 
-        public bool UpdateMonthStartBalance()
+        private IList<RangeUpdateModel> PrepUpdateMonthStartBalance()
         {
             // update Green
             var greenBalance = _repo.LoadPersonalCurrentBalance(UserEnum.Green);
-            if (!_repo.UpdatePersonalStartingBalance(greenBalance, UserEnum.Green))
-                return false;
+            var greenUpdate = _repo.PrepUpdatePersonalStartingBalance(greenBalance, UserEnum.Green);
 
             // update Red
             var redBalance = _repo.LoadPersonalCurrentBalance(UserEnum.Red);
-            if (!_repo.UpdatePersonalStartingBalance(redBalance, UserEnum.Red))
-                return false;
+            var redUpdate = _repo.PrepUpdatePersonalStartingBalance(redBalance, UserEnum.Red);
 
-            return true;
+            greenUpdate.AddRange(new List<RangeUpdateModel>());
+            return greenUpdate;
         }
 
         // TODO: explain
-        public bool SaveHighlightedTransactionsToFreshLedger(Transactions transactions, Categories categories)
+        private IList<RangeUpdateModel> PrepSaveHighlightedTransactions(Transactions transactions, Categories categories)
         {
             var (expenseToSave, incomeToSave) = FindHighlightedTransctions(transactions, categories);
-            return _repo.SaveHighlightedTransactionsToFreshLedger(expenseToSave, incomeToSave);
+            return _repo.PrepSaveHighlightedTransactions(expenseToSave, incomeToSave);
         }
 
         private (List<TransactionExpense> expenseToSave, List<TransactionIncome> incomeToSave) FindHighlightedTransctions(
-            Transactions transactions,
-            Categories categories)
+    Transactions transactions,
+    Categories categories)
         {
             var expenseToSave = new List<TransactionExpense>();
             var incomeToSave = new List<TransactionIncome>();
@@ -159,5 +201,6 @@ namespace MonthSheet.Services
                 }
             };
         }
+        #endregion
     }
 }

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Common.Core.Models;
 using MonthSheet.Common.Enums;
 using MonthSheet.Common.Interfaces;
+using SheetApi.Common.Models;
 
 namespace MonthSheet.Repositories
 {
@@ -23,7 +25,7 @@ namespace MonthSheet.Repositories
             return decimal.Parse(LoadSingle(balanceRange));
         }
         
-        public bool UpdatePersonalStartingBalance(decimal value, UserEnum user)
+        public IList<RangeUpdateModel> PrepUpdatePersonalStartingBalance(decimal value, UserEnum user)
         {
             string balanceRange = null;
             switch (user)
@@ -37,7 +39,7 @@ namespace MonthSheet.Repositories
                 default: break;
             }
 
-            return UpdateSingle(value, balanceRange);
+            return PrepSingleCellUpdate(value, balanceRange);
         }
 
         public decimal LoadNextMonthRentTotal()

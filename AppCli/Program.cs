@@ -2,7 +2,7 @@
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Sheet.Common.Models;
+using SheetApi.Common.Models;
 using Extentions.Config;
 using MonthSheet.Common.Interfaces;
 using MonthSheet.Common.Models;
@@ -61,12 +61,12 @@ namespace AppCli
 
                 // monthRepo.UpdateImbalance((decimal)123456.798, 26);
 
-                
-                // monthService.UpdateMonthStartBalance();
-                // monthRepo.ClearTransactions();
-                var transactions = monthService.LoadTransactions();
-                var categories = monthService.LoadCategories();
-                monthService.SaveHighlightedTransactionsToFreshLedger(transactions, categories);
+                var close = monthService.CloseMonth();
+                if(!close.Success)
+                {
+                    // replace with some real error
+                    Console.WriteLine(close.Exception);
+                }
 
             }
             catch (Exception e)

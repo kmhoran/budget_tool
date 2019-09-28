@@ -3,68 +3,68 @@ using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Extensions.Options;
 using MonthSheet.Common.Models;
-using Sheet.Common.Interfaces;
 using Extentions.Common;
 using Xunit;
 using Moq;
 using MonthSheet.Common.Interfaces;
+using SheetApi.Common.Interfaces;
 
 namespace MonthSheet.Repositories.Tests
 {
     public class MonthSheetRepositoryTests
     {
-        public static readonly TheoryData<IOptions<MonthSheetDetails>, ISheetRepository> ConstructorTheoryData =
-        new TheoryData<IOptions<MonthSheetDetails>, ISheetRepository>
+        public static readonly TheoryData<IOptions<MonthSheetDetails>, ISheetApiService> ConstructorTheoryData =
+        new TheoryData<IOptions<MonthSheetDetails>, ISheetApiService>
         {
             {MonthSheetDetailMocker.GetPassing(), null},
-            {MonthSheetDetailMocker.GetWithMissing("SheetId" ), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("TransactionsExpenseRange"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("TransactionsIncomeRange"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("GreenExpenseCategoriesRange"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("GreenIncomeCategoriesRange"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing( "RedExpenseCategoriesRange"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("RedIncomeCategoriesRange"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("GreenStartingBalance"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("GreenCurrentBalance"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("ImbalanceIndexRange"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("ImbalanceValueRange"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("ImbalanceStartDate"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("RedStartingBalance"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("RedCurrentBalance"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("TransactionsRange"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("ImbalanceColumn"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("RentTotal"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("GreenName"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("RedName"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("GreenMainPageId"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("RedMainPageId"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("DataPageId"), SheetRepoMocker.GetRepository()},
-            {MonthSheetDetailMocker.GetWithMissing("TransactionPageId"), SheetRepoMocker.GetRepository()},
+            {MonthSheetDetailMocker.GetWithMissing("SheetId" ), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("TransactionsExpenseRange"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("TransactionsIncomeRange"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("GreenExpenseCategoriesRange"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("GreenIncomeCategoriesRange"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing( "RedExpenseCategoriesRange"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("RedIncomeCategoriesRange"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("GreenStartingBalance"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("GreenCurrentBalance"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("ImbalanceIndexRange"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("ImbalanceValueRange"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("ImbalanceStartDate"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("RedStartingBalance"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("RedCurrentBalance"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("TransactionsRange"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("ImbalanceColumn"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("RentTotal"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("GreenName"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("RedName"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("GreenMainPageId"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("RedMainPageId"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("DataPageId"), SheetApiMocker.GetService()},
+            {MonthSheetDetailMocker.GetWithMissing("TransactionPageId"), SheetApiMocker.GetService()},
         };
 
         [Theory]
         [MemberData(nameof(ConstructorTheoryData))]
         public void Constructor_with_NullArguments_throws_ArgumentNullException(
             IOptions<MonthSheetDetails> details,
-            ISheetRepository sheetRepo) =>
+            ISheetApiService sheetApi) =>
             Assert.Throws<ArgumentNullException>(
-                () => new MonthSheetRepository(details, sheetRepo));
+                () => new MonthSheetRepository(details, sheetApi));
 
         [Fact]
         public void Constructor_with_NonNullArguments_return_NonNull()
         {
             var repo = GetMonthRepo();
             Assert.NotNull(repo);
+            Assert.IsType<MonthSheetRepository>(repo);
         }
-
 
         [Fact]
         public void LoadTransactions_with_NullSheetApiResponses_returns_EmptyTrnsactionLists()
         {
-            var sheetRepoMock = SheetRepoMocker.GetMock();
-            sheetRepoMock.Setup(x => x.LoadRange(It.IsAny<string>(), It.IsAny<string>()))
+            var sheetApiMock = SheetApiMocker.GetMock();
+            sheetApiMock.Setup(x => x.LoadRange(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns((IList<IList<Object>>)null);
-            var repo = GetMonthRepo(sheetRepo: sheetRepoMock.Object);
+            var repo = GetMonthRepo(sheetApi: sheetApiMock.Object);
 
             var result = repo.LoadTransactions();
 
@@ -75,14 +75,10 @@ namespace MonthSheet.Repositories.Tests
             Assert.Empty(result.Income);
         }
 
-
-
-        private static IMonthSheetRepository GetMonthRepo(IOptions<MonthSheetDetails> sheetDetails = null, ISheetRepository sheetRepo = null)
+        private static IMonthSheetRepository GetMonthRepo(IOptions<MonthSheetDetails> sheetDetails = null, ISheetApiService sheetApi = null)
         {
-            return new MonthSheetRepository(sheetDetails ?? MonthSheetDetailMocker.GetPassing(), SheetRepoMocker.GetRepository());
+            return new MonthSheetRepository(sheetDetails ?? MonthSheetDetailMocker.GetPassing(), sheetApi ?? SheetApiMocker.GetService());
         }
-
-
     }
     #region Helpers
     public static class MonthSheetDetailMocker
@@ -131,16 +127,16 @@ namespace MonthSheet.Repositories.Tests
         }
     }
 
-    public static class SheetRepoMocker
+    public static class SheetApiMocker
     {
-        public static Mock<ISheetRepository> GetMock()
+        public static Mock<ISheetApiService> GetMock()
         {
-            return new Mock<ISheetRepository>();
+            return new Mock<ISheetApiService>();
         }
 
-        public static ISheetRepository GetRepository()
+        public static ISheetApiService GetService()
         {
-            return new Mock<ISheetRepository>().Object;
+            return new Mock<ISheetApiService>().Object;
         }
     }
     public static class ClassExtentions

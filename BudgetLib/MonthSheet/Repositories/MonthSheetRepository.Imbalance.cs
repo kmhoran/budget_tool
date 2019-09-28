@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Common.Core.Models;
 using MonthSheet.Common.Interfaces;
-using Sheet.Common.Models;
+using SheetApi.Common.Models;
 
 namespace MonthSheet.Repositories
 {
@@ -13,16 +14,16 @@ namespace MonthSheet.Repositories
             return decimal.Parse(result);
         }
 
-        public bool UpdateImbalance(decimal value, int index)
+        public IList<RangeUpdateModel> PrepUpdateImbalance(decimal value, int index)
         {
             var range = _sheetDetails.ImbalanceColumn+index;
-            return UpdateSingle(value, range);
+            return PrepSingleCellUpdate(value, range);
         }
 
         // for backwards compatability
-        public bool UpdateImbalanceIndex(int index)
+        public IList<RangeUpdateModel> PrepUpdateImbalanceIndex(int index)
         {
-            return UpdateSingle(index, _sheetDetails.ImbalanceIndexRange);
+            return PrepSingleCellUpdate(index, _sheetDetails.ImbalanceIndexRange);
         }
     }
 }

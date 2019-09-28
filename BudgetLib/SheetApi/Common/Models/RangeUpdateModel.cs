@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Sheet.Common.Enums;
+using SheetApi.Common.Enums;
 
-namespace Sheet.Common.Models
+namespace SheetApi.Common.Models
 {
     public class RangeUpdateModel
     {
         public string Range { get; set; }
-        public DimensionType Dimension { get; set; }
+        public DimensionEnums Dimension { get; set; }
         public IList<IList<Object>> Values { get; set; }
     }
 }

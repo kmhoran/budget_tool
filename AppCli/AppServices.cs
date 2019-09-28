@@ -6,9 +6,9 @@ using MonthSheet.Common.Interfaces;
 using MonthSheet.Common.Models;
 using MonthSheet.Repositories;
 using MonthSheet.Services;
-using Sheet.Common;
-using Sheet.Common.Interfaces;
-using Sheet.Common.Models;
+using SheetApi.Common.Interfaces;
+using SheetApi.Common.Models;
+using SheetApi.Services;
 
 namespace AppCli
 {
@@ -18,7 +18,8 @@ namespace AppCli
         public static ServiceProvider GetProvider(IConfigurationRoot config)
         {
             var collection = new ServiceCollection();
-            collection.AddSingleton<ISheetRepository, SheetRepository>()
+            collection
+            .AddSingleton<ISheetApiService, SheetApiService>()
             .AddScoped<IMonthSheetRepository, MonthSheetRepository>()
             .AddScoped<IMonthSheetService, MonthSheetService>();
 

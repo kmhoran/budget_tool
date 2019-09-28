@@ -3,6 +3,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\HistoricSheet.Common.csproj" />
     <ProjectReference Include="..\Repositories\HistoricSheet.Repositories.csproj" />
+    <ProjectReference Include="..\..\Common\Core\Common.Core.csproj" />
+    <ProjectReference Include="..\..\MonthSheet\Common\MonthSheet.Common.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

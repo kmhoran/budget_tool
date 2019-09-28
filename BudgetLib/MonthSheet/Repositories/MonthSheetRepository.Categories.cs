@@ -18,6 +18,7 @@ namespace MonthSheet.Repositories
                 Red = redCategories
             };
         }
+
         private CategoriesPersonal LoadPersonalCategories(UserEnum user)
         {
             string expenseRange = null;

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Common.Core.Models;
 using MonthSheet.Common.Enums;
 using MonthSheet.Common.Interfaces;
 using MonthSheet.Common.Models;
-using Sheet.Common.Enums;
-using Sheet.Common.Models;
+using SheetApi.Common.Enums;
+using SheetApi.Common.Models;
 
 namespace MonthSheet.Repositories
 {
@@ -89,7 +90,7 @@ namespace MonthSheet.Repositories
             };
         }
 
-        public bool ClearTransactions()
+        public WrappedResponse ClearTransactions()
         {
             return _sheetApi.ClearRange(_sheetDetails.SheetId, _sheetDetails.TransactionsRange);
         }
@@ -97,21 +98,12 @@ namespace MonthSheet.Repositories
         /*
         This method is responsible for updating the (hopefully empty) transaction columns with 
          */
-        public bool SaveHighlightedTransactionsToFreshLedger(List<TransactionExpense> expenses, List<TransactionIncome> incomes)
+        public IList<RangeUpdateModel> PrepSaveHighlightedTransactions(List<TransactionExpense> expenses, List<TransactionIncome> incomes)
         {
-            // the service expects to write highlighted transactions to a blank ledger. Let's clear it out.
-            var tableClearSuccess = ClearTransactions();
-            if (!tableClearSuccess)
-            {
-                // TODO : get some real error handling
-                Console.WriteLine("COULD NOT CLEAR TRANSACTION TABLE");
-                return false;
-            }
-
             // expense update
             var expenseUpdateModel = new RangeUpdateModel();
             expenseUpdateModel.Range = _sheetDetails.TransactionsExpenseRange;
-            expenseUpdateModel.Dimension = DimensionType.Rows;
+            expenseUpdateModel.Dimension = DimensionEnums.Rows;
             expenseUpdateModel.Values = new List<IList<object>>();
 
             foreach (var expense in expenses)
@@ -130,7 +122,7 @@ namespace MonthSheet.Repositories
             // expense update
             var incomeUpdateModel = new RangeUpdateModel();
             incomeUpdateModel.Range = _sheetDetails.TransactionsIncomeRange;
-            incomeUpdateModel.Dimension = DimensionType.Rows;
+            incomeUpdateModel.Dimension = DimensionEnums.Rows;
             incomeUpdateModel.Values = new List<IList<object>>();
 
             foreach (var income in incomes)
@@ -145,12 +137,10 @@ namespace MonthSheet.Repositories
                 incomeUpdateModel.Values.Add(row);
             }
 
-            var toSave = new List<RangeUpdateModel> {
+            return new List<RangeUpdateModel> {
                 expenseUpdateModel,
                 incomeUpdateModel
             };
-
-            return UpdateRange(toSave);
         }
     }
 }
