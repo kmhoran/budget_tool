@@ -45,21 +45,6 @@ namespace AppCli
                 var monthRepo = services.GetService<IMonthSheetRepository>();
                 var monthService = services.GetService<IMonthSheetService>();
 
-                // TODO: Remove Demo
-                // var transactions = monthRepo.LoadTransactions();
-                // foreach (var expense in transactions.Expenses)
-                // {
-                //     Console.WriteLine($"${expense.NetCost}\t\t{expense.Detail}");
-                // }
-
-                // TODO: REMOVE
-                // var categories = monthRepo.LoadCategories();
-                // foreach(var c in categories.Green.RawExpense)
-                // {
-                //     Console.WriteLine($"${c[0].ToString()}");
-                // }
-
-                // monthRepo.UpdateImbalance((decimal)123456.798, 26);
 
                 var close = monthService.CloseMonth();
                 if(!close.Success)
