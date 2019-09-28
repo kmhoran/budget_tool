@@ -74,5 +74,10 @@ namespace SheetApi.Services
             };
         }
 
+        protected WrappedResponse AppendToRange(RangeUpdateModel model)
+        {
+            return _sheetApi.AppendToRange(_sheetId, model);
+        }
+
     }
 }

@@ -60,8 +60,6 @@ namespace MonthSheet.Services
                 return (WrappedResponse<MonthCloseResponse>)tableClearResult;
             }
 
-            
-
             return new WrappedResponse<MonthCloseResponse>
             {
                 Success = true,

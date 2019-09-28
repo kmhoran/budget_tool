@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Common.Core.Models;
+using Common.Utils;
 using MonthSheet.Common.Enums;
 using MonthSheet.Common.Interfaces;
 using MonthSheet.Common.Models;
@@ -18,6 +19,9 @@ namespace MonthSheet.Repositories
 
         public Transactions LoadTransactions()
         {
+            var effectiveDate = Month.GetEffectiveDate();
+            var effectiveYear = effectiveDate.Year;
+            var effectiveMonth = effectiveDate.Month;
             // load expenses
             var rawExpenses = LoadRange(_sheetDetails.TransactionsExpenseRange);
             var expenses = new List<TransactionExpense>();
@@ -48,6 +52,11 @@ namespace MonthSheet.Repositories
                         Category = row[(int)TransactionExpenseColumnEnum.Category].ToString(),
 
                     };
+
+                    // check for bad data. make sure all entries are dated for this year and month
+                    if (expense.TransactionDate.Year != effectiveYear || expense.TransactionDate.Month != effectiveMonth)
+                        expense.TransactionDate = new DateTime(effectiveYear, effectiveMonth, expense.TransactionDate.Day);
+
                     expenses.Add(expense);
                 }
             }
@@ -57,12 +66,14 @@ namespace MonthSheet.Repositories
             var incomes = new List<TransactionIncome>();
             if (rawIncome != null && rawIncome.Count > 0)
             {
+
                 foreach (var row in rawIncome)
                 {
                     if (row.Count <= (int)TransactionIncomeColumnEnum.Category)
                     {
                         continue;
                     }
+
                     var income = new TransactionIncome()
                     {
                         Save = row[(int)TransactionIncomeColumnEnum.SaveNote]
@@ -77,6 +88,11 @@ namespace MonthSheet.Repositories
                         Category = row[(int)TransactionIncomeColumnEnum.Category].ToString(),
 
                     };
+
+                    // check for bad data. make sure all entries are dated for this year and month
+                    if (income.TransactionDate.Year != effectiveYear || income.TransactionDate.Month != effectiveMonth)
+                        income.TransactionDate = new DateTime(effectiveYear, effectiveMonth, income.TransactionDate.Day);
+
                     incomes.Add(income);
                 }
             }
