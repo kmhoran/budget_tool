@@ -9,6 +9,7 @@ namespace MonthSheet.Common.Interfaces
     {
         Transactions LoadTransactions();
         WrappedResponse<MonthCloseResponse> CloseMonth();
+        WrappedResponse UpdateCategoryProjections(Categories categories);
         Categories LoadCategories();
     }
 }

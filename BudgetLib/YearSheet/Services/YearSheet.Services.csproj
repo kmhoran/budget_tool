@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\YearSheet.Common.csproj" />
+    <ProjectReference Include="..\Repositories\YearSheet.Repositories.csproj" />
+    <ProjectReference Include="..\..\Common\Utils\Common.Utils.csproj" />
+    <ProjectReference Include="..\..\Extentions\Common\Extentions.Common.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+</Project>

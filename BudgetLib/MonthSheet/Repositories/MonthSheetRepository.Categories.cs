@@ -1,7 +1,11 @@
 using System;
+using System.Collections.Generic;
+using Common.Core.Enums;
+using Common.Core.Models;
 using MonthSheet.Common.Enums;
 using MonthSheet.Common.Interfaces;
-using MonthSheet.Common.Models;
+using SheetApi.Common.Enums;
+using SheetApi.Common.Models;
 
 namespace MonthSheet.Repositories
 {
@@ -11,7 +15,7 @@ namespace MonthSheet.Repositories
         {
             var greenCategories = LoadPersonalCategories(UserEnum.Green);
             var redCategories = LoadPersonalCategories(UserEnum.Red);
-            
+
             return new Categories
             {
                 Green = greenCategories,
@@ -89,23 +93,23 @@ namespace MonthSheet.Repositories
             if (rawIncome != null && rawIncome.Count > 0)
             {
                 income.Total = decimal
-                    .Parse(rawExpense[(int)CategoriesIncomeRowEnum.Total][0].ToString());
+                    .Parse(rawIncome[(int)CategoriesIncomeRowEnum.Total][0].ToString());
                 income.Savings = decimal
-                    .Parse(rawExpense[(int)CategoriesIncomeRowEnum.Savings][0].ToString());
+                    .Parse(rawIncome[(int)CategoriesIncomeRowEnum.Savings][0].ToString());
                 income.Paycheck = decimal
-                    .Parse(rawExpense[(int)CategoriesIncomeRowEnum.Paycheck][0].ToString());
+                    .Parse(rawIncome[(int)CategoriesIncomeRowEnum.Paycheck][0].ToString());
                 income.Bonus = decimal
-                    .Parse(rawExpense[(int)CategoriesIncomeRowEnum.Bonus][0].ToString());
+                    .Parse(rawIncome[(int)CategoriesIncomeRowEnum.Bonus][0].ToString());
                 income.Personal = decimal
-                    .Parse(rawExpense[(int)CategoriesIncomeRowEnum.Personal][0].ToString());
+                    .Parse(rawIncome[(int)CategoriesIncomeRowEnum.Personal][0].ToString());
                 income.Gifts = decimal
-                    .Parse(rawExpense[(int)CategoriesIncomeRowEnum.Gifts][0].ToString());
+                    .Parse(rawIncome[(int)CategoriesIncomeRowEnum.Gifts][0].ToString());
                 income.Refund = decimal
-                    .Parse(rawExpense[(int)CategoriesIncomeRowEnum.Refund][0].ToString());
+                    .Parse(rawIncome[(int)CategoriesIncomeRowEnum.Refund][0].ToString());
                 income.Payment = decimal
-                    .Parse(rawExpense[(int)CategoriesIncomeRowEnum.Payment][0].ToString());
+                    .Parse(rawIncome[(int)CategoriesIncomeRowEnum.Payment][0].ToString());
                 income.Other = decimal
-                    .Parse(rawExpense[(int)CategoriesIncomeRowEnum.Other][0].ToString());
+                    .Parse(rawIncome[(int)CategoriesIncomeRowEnum.Other][0].ToString());
             }
 
 
@@ -116,6 +120,61 @@ namespace MonthSheet.Repositories
                 Income = income,
                 RawIncome = rawIncome
             };
+        }
+
+        public IList<RangeUpdateModel> PrepExpenseCategoryProjectionUpdate(CategoriesExpense expenses, UserEnum user)
+        {
+            var expenseUpdateModel = new RangeUpdateModel();
+            expenseUpdateModel.Range = user == UserEnum.Green ?
+                _sheetDetails.GreenExpenseProjectionRange :
+                _sheetDetails.RedExpenseProjectionRange;
+
+            expenseUpdateModel.Dimension = DimensionEnums.Columns;
+
+            // TODO: use order-safe enum
+            expenseUpdateModel.Values = new List<IList<object>> {
+                new List<object> {
+                    expenses.DailyFood,
+                    expenses.Gifts,
+                    expenses.Medical,
+                    expenses.Health,
+                    expenses.Necessities,
+                    expenses.Transportation,
+                    expenses.Personal,
+                    expenses.Fun,
+                    expenses.Utilities,
+                    expenses.Travel,
+                    expenses.Debt,
+                    expenses.Electronics,
+                    expenses.Goals,
+                    expenses.Rent,
+                    expenses.Car,
+                    expenses.Restaurants,
+                    expenses.Appartment,
+                    expenses.Investment,
+                    expenses.Other},
+            };
+            return new List<RangeUpdateModel> { expenseUpdateModel };
+        }
+
+        public IList<RangeUpdateModel> PrepIncomeCategoryProjectionUpdate(CategoriesIncome income, UserEnum user)
+        {
+            var update = new RangeUpdateModel();
+            update.Range = user == UserEnum.Green ?
+                            _sheetDetails.GreenIncomeProjectionRange :
+                            _sheetDetails.RedIncomeProjectionRange;
+
+            update.Dimension = DimensionEnums.Columns;
+
+            var catchAllValue = income.Payment + income.Gifts + income.Refund + income.Other;
+            update.Values = new List<IList<object>> {
+                new List<object> {
+                    0,
+                    income.Paycheck,
+                },
+            };
+
+            return new List<RangeUpdateModel> { update };
         }
     }
 }

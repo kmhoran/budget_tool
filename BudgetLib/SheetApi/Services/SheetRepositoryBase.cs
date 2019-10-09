@@ -39,19 +39,19 @@ namespace SheetApi.Services
             return result[0][0].ToString();
         }
 
-        protected WrappedResponse UpdateRange(IList<IList<Object>> values, string range, DimensionEnums dimension = DimensionEnums.Columns)
-        {
-            var updateModel = new RangeUpdateModel
-            {
-                Range = range,
-                Values = values,
-                Dimension = dimension
-            };
+        // protected WrappedResponse UpdateRange(IList<IList<Object>> values, string range, DimensionEnums dimension = DimensionEnums.Columns)
+        // {
+        //     var updateModel = new RangeUpdateModel
+        //     {
+        //         Range = range,
+        //         Values = values,
+        //         Dimension = dimension
+        //     };
 
-            return _sheetApi.UpdateRange(_sheetId, updateModel);
-        }
+        //     return _sheetApi.UpdateRange(_sheetId, updateModel);
+        // }
 
-        protected WrappedResponse UpdateRange(IList<RangeUpdateModel> models)
+        public WrappedResponse UpdateRange(IList<RangeUpdateModel> models)
         {
             return _sheetApi.UpdateRange(_sheetId, models);
         }

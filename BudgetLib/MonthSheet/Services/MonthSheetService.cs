@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Common.Core.Enums;
 using Common.Core.Models;
 using Common.Utils;
 using Extentions.Common;
@@ -58,6 +59,13 @@ namespace MonthSheet.Services
                 // TODO : get some real error handling
                 Console.WriteLine("COULD NOT CLEAR TRANSACTION TABLE");
                 return (WrappedResponse<MonthCloseResponse>)tableClearResult;
+            }
+            var updateResponse = _repo.UpdateRange(updates);
+            if (!updateResponse.Success)
+            {
+                // TODO : get some real error handling
+                Console.WriteLine("COULD NOT UPDATE TRANSACTION TABLE");
+                return (WrappedResponse<MonthCloseResponse>)updateResponse;
             }
 
             return new WrappedResponse<MonthCloseResponse>
@@ -198,6 +206,41 @@ namespace MonthSheet.Services
                     Category = CategoriesExpenseRowEnum.Rent.GetString()
                 }
             };
+        }
+
+        public WrappedResponse UpdateCategoryProjections(Categories categories)
+        {
+            var updates = new List<RangeUpdateModel>();
+            // update green projections
+            var greenUpdate = PrepCategoryProjectionsUpdate(categories, UserEnum.Green);
+            updates.AddRange(greenUpdate);
+
+            // update red projections
+            var redUpdate = PrepCategoryProjectionsUpdate(categories, UserEnum.Red);
+            updates.AddRange(redUpdate);
+
+            var updateResponse = _repo.UpdateRange(updates);
+            if (!updateResponse.Success)
+            {
+                return updateResponse;
+            }
+
+            return new WrappedResponse { Success = true };
+        }
+
+        private IList<RangeUpdateModel> PrepCategoryProjectionsUpdate(Categories categories, UserEnum user)
+        {
+            var personalCategories = user == UserEnum.Green ?
+                categories.Green :
+                categories.Red;
+
+            // build expense projections
+            var updates = _repo.PrepExpenseCategoryProjectionUpdate(personalCategories.Expense, user);
+
+            // build income projections
+            updates.AddRange(_repo.PrepIncomeCategoryProjectionUpdate(personalCategories.Income, user));
+
+            return updates;
         }
         #endregion
     }
