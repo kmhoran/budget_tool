@@ -12,6 +12,10 @@ using MonthSheet.Services;
 using SheetApi.Common.Interfaces;
 using SheetApi.Common.Models;
 using SheetApi.Services;
+using YearSheet.Common.Interfaces;
+using YearSheet.Common.Models;
+using YearSheet.Repositories;
+using YearSheet.Services;
 
 namespace AppCli
 {
@@ -26,12 +30,15 @@ namespace AppCli
             .AddScoped<IMonthSheetRepository, MonthSheetRepository>()
             .AddScoped<IMonthSheetService, MonthSheetService>()
             .AddScoped<IHistoricSheetRepository, HistoricSheetRepository>()
-            .AddScoped<IHistoricSheetService, HistoricSheetService>();
+            .AddScoped<IHistoricSheetService, HistoricSheetService>()
+            .AddScoped<IYearSheetRepositoryFactory, YearSheetRepositoryFactory>()
+            .AddScoped<IYearSheetService, YearSheetService>();
 
             // Configure secrets
             collection.Configure<GoogleServiceAccount>(config.GetSection(nameof(GoogleServiceAccount)))
             .Configure<MonthSheetDetails>(config.GetSection(nameof(MonthSheetDetails)))
-            .Configure<HistoricSheetDetails>(config.GetSection(nameof(HistoricSheetDetails)));
+            .Configure<HistoricSheetDetails>(config.GetSection(nameof(HistoricSheetDetails)))
+            .Configure<YearSheetDetails>(config.GetSection(nameof(YearSheetDetails)));
 
             collection.AddOptions();
 

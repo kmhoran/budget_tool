@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Common.Core.Models;
-using MonthSheet.Common.Enums;
+using Common.Core.Enums;
 using MonthSheet.Common.Interfaces;
 using SheetApi.Common.Models;
 

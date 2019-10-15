@@ -9,6 +9,9 @@
         <ProjectReference Include="..\BudgetLib\SheetApi\Common\SheetApi.Common.csproj" />
         <ProjectReference Include="..\BudgetLib\SheetApi\Services\SheetApi.Services.csproj" />
         <ProjectReference Include="..\BudgetLib\Common\Core\Common.Core.csproj" />
+        <ProjectReference Include="..\BudgetLib\YearSheet\Common\YearSheet.Common.csproj" />
+        <ProjectReference Include="..\BudgetLib\YearSheet\Repositories\YearSheet.Repositories.csproj" />
+        <ProjectReference Include="..\BudgetLib\YearSheet\Services\YearSheet.Services.csproj" />
     </ItemGroup>
     <PropertyGroup>
         <OutputType>Exe</OutputType>

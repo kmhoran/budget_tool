@@ -1,4 +1,5 @@
 using System;
+using Common.Core.Models;
 
 namespace MonthSheet.Common.Models
 {

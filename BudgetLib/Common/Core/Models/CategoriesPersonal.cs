@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MonthSheet.Common.Models
+namespace Common.Core.Models
 {
     public class CategoriesPersonal
     {

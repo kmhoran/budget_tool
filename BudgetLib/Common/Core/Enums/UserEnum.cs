@@ -1,6 +1,6 @@
 using System;
 
-namespace MonthSheet.Common.Enums
+namespace Common.Core.Enums
 {
     public enum UserEnum
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace MonthSheet.Common.Models
+namespace Common.Core.Models
 {
     public class CategoriesExpense
     {

@@ -8,9 +8,12 @@ namespace MonthSheet.Common.Models
         public string SheetId { get; set; }
         public string TransactionsExpenseRange { get; set; }
         public string TransactionsIncomeRange { get; set; }
+        public string GreenExpenseProjectionRange { get; set; }
+        public string RedExpenseProjectionRange { get; set; }
+        public string GreenIncomeProjectionRange { get; set; }
+        public string RedIncomeProjectionRange  { get; set; }
         public string GreenExpenseCategoriesRange { get; set; }
         public string GreenIncomeCategoriesRange { get; set; }
-
         public string RedExpenseCategoriesRange { get; set; }
         public string RedIncomeCategoriesRange { get; set; }
         public string GreenStartingBalance { get; set; }

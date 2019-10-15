@@ -8,6 +8,8 @@ using MonthSheet.Common.Interfaces;
 using MonthSheet.Common.Models;
 using HistoricSheet.Common.Models;
 using HistoricSheet.Common.Interfaces;
+using YearSheet.Common.Models;
+using YearSheet.Common.Interfaces;
 
 namespace AppCli
 {
@@ -30,6 +32,7 @@ namespace AppCli
                 builder.AddUserSecrets<GoogleServiceAccount>();
                 builder.AddUserSecrets<MonthSheetDetails>();
                 builder.AddUserSecrets<HistoricSheetDetails>();
+                builder.AddUserSecrets<YearSheetDetails>();
             }
 
             builder.AddDockerSecrets();
@@ -46,6 +49,7 @@ namespace AppCli
                 var monthRepo = services.GetService<IMonthSheetRepository>();
                 var monthService = services.GetService<IMonthSheetService>();
                 var historicService = services.GetService<IHistoricSheetService>();
+                var yearService = services.GetService<IYearSheetService>();
 
 
                 var close = monthService.CloseMonth();
@@ -53,6 +57,7 @@ namespace AppCli
                 {
                     // replace with some real error
                     Console.WriteLine(close.Exception.Message);
+                    Console.WriteLine(close.Exception.StackTrace);
                     return;
                 }
 
@@ -60,6 +65,23 @@ namespace AppCli
                 if (!updateHistoric.Success)
                 {
                     Console.WriteLine(updateHistoric.Exception.Message);
+                    Console.WriteLine(updateHistoric.Exception.StackTrace);
+                    return;
+                }
+
+                var projectionsResponse = yearService.SaveCategoriesToYear(close.Data.Categories);
+                if (!projectionsResponse.Success)
+                {
+                    Console.WriteLine(projectionsResponse.Exception.Message);
+                    Console.WriteLine(projectionsResponse.Exception.StackTrace);
+                    return;
+                }
+
+                var projectionUpdateResponse = monthService.UpdateCategoryProjections(projectionsResponse.Data);
+                if (!projectionUpdateResponse.Success)
+                {
+                    Console.WriteLine(projectionUpdateResponse.Exception.Message);
+                    Console.WriteLine(projectionUpdateResponse.Exception.StackTrace);
                     return;
                 }
 
