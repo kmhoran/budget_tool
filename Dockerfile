@@ -5,10 +5,10 @@ WORKDIR /app/
 COPY . ./
 
 # publish to /out
-RUN dotnet publish AppCli/AppCli.csproj -c Release -o /app/out
+RUN dotnet publish WebApi/WebApi.csproj -c Release -o /app/out
 # change to published directory and set entrypoint
 FROM mcr.microsoft.com/dotnet/core/runtime:2.2
 WORKDIR /app/
 COPY --from=build-env /app/out ./
-RUN ls -a
-ENTRYPOINT ["dotnet", "AppCli.dll"]
+EXPOSE 80
+ENTRYPOINT ["dotnet", "WebApi.dll"]

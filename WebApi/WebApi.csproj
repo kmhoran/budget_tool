@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <UserSecretsId>budget-sheet-credentials-435d-9258-7311628fc46f</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.9.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BudgetLib\SheetApi\Common\SheetApi.Common.csproj" />
+    <ProjectReference Include="..\BudgetLib\SheetApi\Services\SheetApi.Services.csproj" />
+    <ProjectReference Include="..\BudgetLib\MonthSheet\Common\MonthSheet.Common.csproj" />
+    <ProjectReference Include="..\BudgetLib\MonthSheet\Repositories\MonthSheet.Repositories.csproj" />
+    <ProjectReference Include="..\BudgetLib\MonthSheet\Services\MonthSheet.Services.csproj" />
+    <ProjectReference Include="..\BudgetLib\HistoricSheet\Common\HistoricSheet.Common.csproj" />
+    <ProjectReference Include="..\BudgetLib\HistoricSheet\Repositories\HistoricSheet.Repositories.csproj" />
+    <ProjectReference Include="..\BudgetLib\HistoricSheet\Services\HistoricSheet.Services.csproj" />
+    <ProjectReference Include="..\BudgetLib\YearSheet\Common\YearSheet.Common.csproj" />
+    <ProjectReference Include="..\BudgetLib\YearSheet\Repositories\YearSheet.Repositories.csproj" />
+    <ProjectReference Include="..\BudgetLib\YearSheet\Services\YearSheet.Services.csproj" />
+    <ProjectReference Include="..\BudgetLib\Extentions\Config\Extentions.Config.csproj" />
+  </ItemGroup>
+
+</Project>

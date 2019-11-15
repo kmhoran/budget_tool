@@ -170,7 +170,8 @@ namespace MonthSheet.Services
             var thisMonthIncome = categories.Green.Income.Total + categories.Red.Income.Total;
 
             // TODO: explain
-            var redProportion = (nextRentTotal / thisMonthIncome) * categories.Red.Income.Total;
+            var redProportion = thisMonthIncome > 0?
+            (nextRentTotal / thisMonthIncome) * categories.Red.Income.Total : 0;
             var redRent = redProportion - (redProportion % 5);
             var greenRent = nextRentTotal - redRent;
 
