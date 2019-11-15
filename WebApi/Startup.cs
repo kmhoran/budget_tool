@@ -14,6 +14,7 @@ using Microsoft.Extensions.Options;
 using MonthSheet.Common.Models;
 using SheetApi.Common.Models;
 using YearSheet.Common.Models;
+using MongoTest.Repositories;
 
 namespace WebApi
 {
@@ -30,10 +31,18 @@ namespace WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services = AppServices.SetServices(services);
+
+            services.AddSingleton<IMongoTestRepository,MongoTestRespository>();
+
             services.Configure<GoogleServiceAccount>(Configuration.GetSection(nameof(GoogleServiceAccount)))
             .Configure<MonthSheetDetails>(Configuration.GetSection(nameof(MonthSheetDetails)))
             .Configure<HistoricSheetDetails>(Configuration.GetSection(nameof(HistoricSheetDetails)))
             .Configure<YearSheetDetails>(Configuration.GetSection(nameof(YearSheetDetails)));
+
+            services.Configure<BookstoreDatabaseSettings>(
+                Configuration.GetSection(nameof(BookstoreDatabaseSettings)));
+            services.AddSingleton<IBookstoreDatabaseSettings>(
+                sp => sp.GetRequiredService<IOptions<BookstoreDatabaseSettings>>().Value);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

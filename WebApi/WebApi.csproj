@@ -27,6 +27,7 @@
     <ProjectReference Include="..\BudgetLib\YearSheet\Repositories\YearSheet.Repositories.csproj" />
     <ProjectReference Include="..\BudgetLib\YearSheet\Services\YearSheet.Services.csproj" />
     <ProjectReference Include="..\BudgetLib\Extentions\Config\Extentions.Config.csproj" />
+    <ProjectReference Include="..\MongoTest\Repositories\MongoTest.Repositories.csproj" />
   </ItemGroup>
 
 </Project>
