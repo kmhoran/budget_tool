@@ -15,6 +15,7 @@ using MonthSheet.Common.Models;
 using SheetApi.Common.Models;
 using YearSheet.Common.Models;
 using MongoTest.Repositories;
+using WebApi.Authentikate;
 
 namespace WebApi
 {
@@ -32,7 +33,7 @@ namespace WebApi
         {
             services = AppServices.SetServices(services);
 
-            services.AddSingleton<IMongoTestRepository,MongoTestRespository>();
+            services.AddSingleton<IMongoTestRepository, MongoTestRespository>();
 
             services.Configure<GoogleServiceAccount>(Configuration.GetSection(nameof(GoogleServiceAccount)))
             .Configure<MonthSheetDetails>(Configuration.GetSection(nameof(MonthSheetDetails)))
@@ -45,6 +46,7 @@ namespace WebApi
                 sp => sp.GetRequiredService<IOptions<BookstoreDatabaseSettings>>().Value);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddHttpClient<IAuthentikateService, AuthentikateService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

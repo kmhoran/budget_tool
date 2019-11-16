@@ -6,33 +6,42 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MongoTest.Repositories;
 using SheetApi.Common.Models;
+using WebApi.Authentikate;
 
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class ValuesController : BaseController
     {
         private IMongoTestRepository _mongoTest;
+        private IAuthentikateService _authentikate;
 
-        public ValuesController(IMongoTestRepository mongoTest)
+        public ValuesController(IMongoTestRepository mongoTest, IAuthentikateService authentikate)
         {
             _mongoTest = mongoTest;
+            _authentikate = authentikate;
         }
 
         // GET api/values
         [HttpGet]
-        public ActionResult<List<Book>> Get()
+        public async Task<IActionResult> Get()
         {
-            _mongoTest.Create(new Book{
+            // validate request
+            var user = await _authentikate.GetUser(HttpContext);
+            if (string.IsNullOrEmpty(user)) return this.UnauthorizedResponse();
+
+            _mongoTest.Create(new Book
+            {
                 BookName = "Very Good Book",
                 Price = (decimal)(9.99),
                 Category = "Good Books",
                 Author = "Good Writer"
 
             });
-            return _mongoTest.GetBooks();
+            return this.OkResponse(_mongoTest.GetBooks());
         }
+
 
         // GET api/values/5
         [HttpGet("{id}")]
@@ -58,5 +67,6 @@ namespace WebApi.Controllers
         public void Delete(int id)
         {
         }
+
     }
 }
